@@ -1,11 +1,13 @@
-const { Client,RemoteAuth } = require("whatsapp-web.js");
-const qrcode = require("qrcode-terminal");
-const OpenAI = require("openai");
+import { Client, RemoteAuth } from "whatsapp-web.js";
+import qrcode from "qrcode-terminal";
+import OpenAI from "openai";
 require("dotenv").config();
-const { MongoStore } = require('wwebjs-mongo');
-const mongoose = require('mongoose');
+import { MongoStore } from 'wwebjs-mongo';
+import mongoose from 'mongoose';
+const options ={
 
-const client = new Client();
+}
+const client = new Client({puppeteer:{browserWSEndpoint:process.env.PUP_WS!}});
 
 client.on("qr", (qr) => {
   qrcode.generate(qr, { small: true });
@@ -26,7 +28,7 @@ const openai = new OpenAI({
   });
 
 
-async function runCompletion (message) {
+async function runCompletion (message:string) {
     const response = await openai.chat.completions.create({
         model: "gpt-3.5-turbo",
         // stream: true,
@@ -40,12 +42,12 @@ client.on('message', message => {
     console.log(message.body);
 
     if(message.body.startsWith("#")) {
-        runCompletion(message.body.substring(1)).then(result => message.reply(result));
+        runCompletion(message.body.substring(1)).then(result => message.reply(result as string));
     }
 });
 
 
-mongoose.connect(process.env.MONGODB_URI).then(() => {
+mongoose.connect(process.env.MONGODB_URI!).then(() => {
     const store = new MongoStore({ mongoose: mongoose });
     const client = new Client({
         authStrategy: new RemoteAuth({
