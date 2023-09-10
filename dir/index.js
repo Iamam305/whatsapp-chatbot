@@ -19,7 +19,8 @@ require("dotenv").config();
 const wwebjs_mongo_1 = require("wwebjs-mongo");
 const mongoose_1 = __importDefault(require("mongoose"));
 const options = {};
-const client = new whatsapp_web_js_1.Client({ puppeteer: { browserWSEndpoint: process.env.PUP_WS } });
+const client = new whatsapp_web_js_1.Client({ puppeteer: { headless: true,
+        args: ['--no-sandbox', '--disable-setuid-sandbox'] } });
 client.on("qr", (qr) => {
     qrcode_terminal_1.default.generate(qr, { small: true });
 });

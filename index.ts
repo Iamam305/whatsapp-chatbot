@@ -7,7 +7,8 @@ import mongoose from 'mongoose';
 const options ={
 
 }
-const client = new Client({puppeteer:{browserWSEndpoint:process.env.PUP_WS!}});
+const client = new Client({puppeteer:{headless: true,
+  args: ['--no-sandbox','--disable-setuid-sandbox']}});
 
 client.on("qr", (qr) => {
   qrcode.generate(qr, { small: true });
